@@ -18,7 +18,7 @@ function CartScreen(props) {
     if (productId) {
       dispatch(addToCart(productId, qty));
     }
-  }, []);
+  }, [dispatch, productId, qty]);
 
   const checkoutHandler = () => {
     props.history.push("/signin?redirect=shipping");
@@ -42,7 +42,7 @@ function CartScreen(props) {
           </div>
             :
             cartItems.map(item =>
-              <li>
+              <li key={item.product}>
                 <div className="cart-image">
                   <img src={item.image} alt="product" />
                 </div>
@@ -55,7 +55,13 @@ function CartScreen(props) {
                   </div>
                   <div>
                     Qty:
-                  <select value={item.qty} onChange={(e) => dispatch(addToCart(item.product, e.target.value))}>
+                  <select value={item.qty} onChange={(e) => {
+                    try {
+                      dispatch(addToCart(item.product, e.target.value))
+                    } catch (error) {
+                      console.error("Error updating cart quantity:", error.message);
+                    }
+                  }}>
                       {[...Array(item.countInStock).keys()].map(x =>
                         <option key={x + 1} value={x + 1}>{x + 1}</option>
                       )}
@@ -76,9 +82,8 @@ function CartScreen(props) {
     </div>
     <div className="cart-action">
       <h3>
-        Subtotal ( {cartItems.reduce((a, c) => a + c.qty, 0)} items)
-        :
-         $ {cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
+        Subtotal ({cartItems.reduce((a, c) => a + c.qty, 0)} items): $
+        {cartItems.reduce((a, c) => a + c.price * c.qty, 0).toFixed(2)}
       </h3>
       <button onClick={checkoutHandler} className="button primary full-width" disabled={cartItems.length === 0}>
         Proceed to Checkout
