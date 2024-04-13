@@ -8,7 +8,8 @@ import {
   productDeleteReducer,
   productReviewSaveReducer,
 } from './reducers/productReducers';
-import { cartReducer } from './reducers/cartReducers';
+// Adjusted import statement to match the export type in cartReducers.js
+import cartReducer from './reducers/cartReducers';
 import {
   userSigninReducer,
   userRegisterReducer,
