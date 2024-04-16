@@ -2,9 +2,11 @@ import Axios from "axios";
 import Cookie from "js-cookie";
 import { CART_ADD_ITEM, CART_REMOVE_ITEM, CART_SAVE_SHIPPING, CART_SAVE_PAYMENT } from "../constants/cartConstants";
 
+Axios.defaults.baseURL = 'https://api-staging.useocto.com/api';
+
 const addToCart = (productId, qty) => async (dispatch, getState) => {
   try {
-    const { data } = await Axios.get("/api/products/" + productId);
+    const { data } = await Axios.get("/products/" + productId);
     dispatch({
       type: CART_ADD_ITEM, payload: {
         product: data._id,

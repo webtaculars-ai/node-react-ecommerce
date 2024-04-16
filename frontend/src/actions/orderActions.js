@@ -4,11 +4,13 @@ import {
   ORDER_DETAILS_REQUEST, ORDER_DETAILS_SUCCESS, ORDER_DETAILS_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL, MY_ORDER_LIST_REQUEST, MY_ORDER_LIST_SUCCESS, MY_ORDER_LIST_FAIL, ORDER_DELETE_REQUEST, ORDER_DELETE_SUCCESS, ORDER_DELETE_FAIL, ORDER_LIST_REQUEST, ORDER_LIST_SUCCESS, ORDER_LIST_FAIL
 } from "../constants/orderConstants";
 
+Axios.defaults.baseURL = 'https://api-staging.useocto.com/api';
+
 const createOrder = (order) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_CREATE_REQUEST, payload: order });
     const { userSignin: { userInfo } } = getState();
-    const { data: { data: newOrder } } = await Axios.post("/api/orders", order, {
+    const { data: { data: newOrder } } = await Axios.post("/orders", order, {
       headers: {
         Authorization: ' Bearer ' + userInfo.token
       }
@@ -23,7 +25,7 @@ const listMyOrders = () => async (dispatch, getState) => {
   try {
     dispatch({ type: MY_ORDER_LIST_REQUEST });
     const { userSignin: { userInfo } } = getState();
-    const { data } = await Axios.get("/api/orders/mine", {
+    const { data } = await Axios.get("/orders/mine", {
       headers:
         { Authorization: 'Bearer ' + userInfo.token }
     });
@@ -38,7 +40,7 @@ const listOrders = () => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_LIST_REQUEST });
     const { userSignin: { userInfo } } = getState();
-    const { data } = await Axios.get("/api/orders", {
+    const { data } = await Axios.get("/orders", {
       headers:
         { Authorization: 'Bearer ' + userInfo.token }
     });
@@ -52,7 +54,7 @@ const detailsOrder = (orderId) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_DETAILS_REQUEST, payload: orderId });
     const { userSignin: { userInfo } } = getState();
-    const { data } = await Axios.get("/api/orders/" + orderId, {
+    const { data } = await Axios.get("/orders/" + orderId, {
       headers:
         { Authorization: 'Bearer ' + userInfo.token }
     });
@@ -66,7 +68,7 @@ const payOrder = (order, paymentResult) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_PAY_REQUEST, payload: paymentResult });
     const { userSignin: { userInfo } } = getState();
-    const { data } = await Axios.put("/api/orders/" + order._id + "/pay", paymentResult, {
+    const { data } = await Axios.put("/orders/" + order._id + "/pay", paymentResult, {
       headers:
         { Authorization: 'Bearer ' + userInfo.token }
     });
@@ -80,7 +82,7 @@ const deleteOrder = (orderId) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_DELETE_REQUEST, payload: orderId });
     const { userSignin: { userInfo } } = getState();
-    const { data } = await Axios.delete("/api/orders/" + orderId, {
+    const { data } = await Axios.delete("/orders/" + orderId, {
       headers:
         { Authorization: 'Bearer ' + userInfo.token }
     });

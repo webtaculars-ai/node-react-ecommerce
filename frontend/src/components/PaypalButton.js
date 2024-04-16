@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://api-staging.useocto.com'; // Set Axios base URL once for the entire application
+axios.defaults.baseURL = 'https://api-staging.useocto.com/api'; // Set Axios base URL once for the entire application
 
 function PaypalButton(props) {
   const [sdkReady, setSdkReady] = useState(false);
 
   const addPaypalSdk = async () => {
     try {
-      const result = await axios.get("/api/config/paypal");
+      const result = await axios.get("/config/paypal");
       const clientID = result.data;
       const script = document.createElement('script');
       script.type = 'text/javascript';

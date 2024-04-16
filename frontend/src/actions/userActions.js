@@ -7,7 +7,7 @@ import {
 } from "../constants/userConstants";
 
 // Setting the Axios default base URL to the new staging API URL
-Axios.defaults.baseURL = 'https://api-staging.useocto.com';
+Axios.defaults.baseURL = 'https://api-staging.useocto.com/api';
 
 const update = ({ userId, name, email, password }) => async (dispatch, getState) => {
   const { userSignin: { userInfo } } = getState();
