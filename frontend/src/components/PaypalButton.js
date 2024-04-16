@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+
+axios.defaults.baseURL = 'https://api-staging.useocto.com/api'; // Set Axios base URL once for the entire application
+
 function PaypalButton(props) {
   const [sdkReady, setSdkReady] = useState(false);
 
   const addPaypalSdk = async () => {
-    const result = await axios.get("/api/config/paypal");
-    const clientID = result.data;
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://www.paypal.com/sdk/js?client-id=' + clientID;
-    script.async = true;
-    script.onload = () => {
-      setSdkReady(true);
+    try {
+      const result = await axios.get("/config/paypal");
+      const clientID = result.data;
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://www.paypal.com/sdk/js?client-id=' + clientID;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      }
+      document.body.appendChild(script);
+    } catch (error) {
+      console.error("Error adding PayPal SDK:", error.message, error.stack);
     }
-    document.body.appendChild(script);
   }
 
   const createOrder = (data, actions) => actions.order.create({
@@ -31,14 +38,16 @@ function PaypalButton(props) {
   const onApprove = (data, actions) => actions.order
     .capture()
     .then(details => props.onSuccess(data, details))
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.error("Error on order approval:", err.message, err.stack);
+    });
 
   useEffect(() => {
     if (!window.paypal) {
       addPaypalSdk();
     }
     return () => {
-      //
+      // Cleanup if needed
     };
   }, []);
 
