@@ -7,6 +7,7 @@ import userRoute from './routes/userRoute';
 import productRoute from './routes/productRoute';
 import orderRoute from './routes/orderRoute';
 import uploadRoute from './routes/uploadRoute';
+import cors from 'cors'; // Added import for CORS
 
 const mongodbUrl = config.MONGODB_URL;
 mongoose
@@ -18,6 +19,7 @@ mongoose
   .catch((error) => console.log(error.reason));
 
 const app = express();
+app.use(cors()); // Enabled CORS
 app.use(bodyParser.json());
 app.use('/api/uploads', uploadRoute);
 app.use('/api/users', userRoute);
