@@ -7,6 +7,11 @@ Axios.defaults.baseURL = 'https://api-staging.useocto.com/api';
 const addToCart = (productId, qty) => async (dispatch, getState) => {
   try {
     const { data } = await Axios.get("/products/" + productId);
+    const quantity = parseInt(qty, 10); // Ensure qty is an integer
+    if (isNaN(quantity)) {
+      console.error(`Failed to parse quantity: ${qty}`);
+      return;
+    }
     dispatch({
       type: CART_ADD_ITEM, payload: {
         product: data._id,
