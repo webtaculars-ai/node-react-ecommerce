@@ -28,18 +28,20 @@ function ProductScreen(props) {
     return () => {
       //
     };
-  }, [productSaveSuccess]);
+  }, [dispatch, productSaveSuccess, props.match.params.id]);
+
   const submitHandler = (e) => {
     e.preventDefault();
     // dispatch actions
     dispatch(
       saveProductReview(props.match.params.id, {
         name: userInfo.name,
-        rating: rating,
+        rating: Number(rating), // Ensure rating is correctly converted to a number
         comment: comment,
       })
     );
   };
+
   const handleAddToCart = () => {
     props.history.push('/cart/' + props.match.params.id + '?qty=' + qty);
   };
