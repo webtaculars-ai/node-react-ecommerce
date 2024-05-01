@@ -16,8 +16,8 @@ import {
   PRODUCT_REVIEW_SAVE_SUCCESS,
 } from '../constants/productConstants';
 import axios from 'axios';
-import Axios from 'axios';
-Axios.defaults.baseURL = 'https://api-staging.useocto.com/api';
+// Note: Axios is imported twice with different cases, consolidating to a single axios import.
+axios.defaults.baseURL = 'https://api-staging.useocto.com/api'; // INPUT_REQUIRED {baseURL of your API}
 
 const listProducts = (
   category = '',
@@ -36,6 +36,7 @@ const listProducts = (
     );
     dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
   } catch (error) {
+    console.error("Error fetching product list:", error);
     dispatch({ type: PRODUCT_LIST_FAIL, payload: error.message });
   }
 };
@@ -47,14 +48,14 @@ const saveProduct = (product) => async (dispatch, getState) => {
       userSignin: { userInfo },
     } = getState();
     if (!product._id) {
-      const { data } = await Axios.post('/products', product, {
+      const { data } = await axios.post('/products', product, {
         headers: {
           Authorization: 'Bearer ' + userInfo.token,
         },
       });
       dispatch({ type: PRODUCT_SAVE_SUCCESS, payload: data });
     } else {
-      const { data } = await Axios.put(
+      const { data } = await axios.put(
         '/products/' + product._id,
         product,
         {
@@ -66,6 +67,7 @@ const saveProduct = (product) => async (dispatch, getState) => {
       dispatch({ type: PRODUCT_SAVE_SUCCESS, payload: data });
     }
   } catch (error) {
+    console.error("Error saving product:", error);
     dispatch({ type: PRODUCT_SAVE_FAIL, payload: error.message });
   }
 };
@@ -76,6 +78,7 @@ const detailsProduct = (productId) => async (dispatch) => {
     const { data } = await axios.get('/products/' + productId);
     dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
   } catch (error) {
+    console.error("Error fetching product details:", error);
     dispatch({ type: PRODUCT_DETAILS_FAIL, payload: error.message });
   }
 };
@@ -93,6 +96,7 @@ const deleteProdcut = (productId) => async (dispatch, getState) => {
     });
     dispatch({ type: PRODUCT_DELETE_SUCCESS, payload: data, success: true });
   } catch (error) {
+    console.error("Error deleting product:", error);
     dispatch({ type: PRODUCT_DELETE_FAIL, payload: error.message });
   }
 };
@@ -116,8 +120,8 @@ const saveProductReview = (productId, review) => async (dispatch, getState) => {
     );
     dispatch({ type: PRODUCT_REVIEW_SAVE_SUCCESS, payload: data });
   } catch (error) {
-    // report error
-    dispatch({ type: PRODUCT_REVIEW_SAVE_FAIL, payload: error.message });
+    console.error("Error saving product review:", error.response ? error.response.data.message : error.message);
+    dispatch({ type: PRODUCT_REVIEW_SAVE_FAIL, payload: error.response && error.response.data.message ? error.response.data.message : error.message });
   }
 };
 
