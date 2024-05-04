@@ -55,7 +55,7 @@ function CartScreen(props) {
                   </div>
                   <div>
                     Qty:
-                  <select value={item.qty} onChange={(e) => dispatch(addToCart(item.product, e.target.value))}>
+                  <select value={item.qty} onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}>
                       {[...Array(item.countInStock).keys()].map(x =>
                         <option key={x + 1} value={x + 1}>{x + 1}</option>
                       )}
@@ -76,9 +76,9 @@ function CartScreen(props) {
     </div>
     <div className="cart-action">
       <h3>
-        Subtotal ( {cartItems.reduce((a, c) => a + c.qty, 0)} items)
+        Subtotal ( {cartItems.reduce((a, c) => a + parseInt(c.qty, 10), 0)} items)
         :
-         $ {cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
+         $ {cartItems.reduce((a, c) => a + c.price * parseInt(c.qty, 10), 0)}
       </h3>
       <button onClick={checkoutHandler} className="button primary full-width" disabled={cartItems.length === 0}>
         Proceed to Checkout
