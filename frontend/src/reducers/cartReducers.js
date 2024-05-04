@@ -3,12 +3,12 @@ import { CART_ADD_ITEM, CART_REMOVE_ITEM, CART_SAVE_SHIPPING, CART_SAVE_PAYMENT 
 function cartReducer(state = { cartItems: [], shipping: {}, payment: {} }, action) {
   switch (action.type) {
     case CART_ADD_ITEM:
-      const item = action.payload;
+      const item = { ...action.payload, qty: parseInt(action.payload.qty, 10) }; // Ensure qty is an integer
       const product = state.cartItems.find(x => x.product === item.product);
       if (product) {
         return {
           cartItems:
-            state.cartItems.map(x => x.product === product.product ? item : x)
+            state.cartItems.map(x => x.product === product.product ? { ...item, qty: parseInt(item.qty, 10) } : x)
         };
       }
       return { cartItems: [...state.cartItems, item] };
@@ -19,7 +19,7 @@ function cartReducer(state = { cartItems: [], shipping: {}, payment: {} }, actio
     case CART_SAVE_PAYMENT:
       return { ...state, payment: action.payload };
     default:
-      return state
+      return state;
   }
 }
 
