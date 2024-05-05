@@ -18,7 +18,7 @@ function CartScreen(props) {
     if (productId) {
       dispatch(addToCart(productId, qty));
     }
-  }, []);
+  }, [dispatch, productId, qty]);
 
   const checkoutHandler = () => {
     props.history.push("/signin?redirect=shipping");
@@ -42,7 +42,7 @@ function CartScreen(props) {
           </div>
             :
             cartItems.map(item =>
-              <li>
+              <li key={item.product}>
                 <div className="cart-image">
                   <img src={item.image} alt="product" />
                 </div>
@@ -55,7 +55,13 @@ function CartScreen(props) {
                   </div>
                   <div>
                     Qty:
-                  <select value={item.qty} onChange={(e) => dispatch(addToCart(item.product, parseInt(e.target.value, 10)))}>
+                  <select value={item.qty} onChange={(e) => {
+                      try {
+                        dispatch(addToCart(item.product, parseInt(e.target.value, 10)));
+                      } catch (error) {
+                        console.error('Error updating cart quantity:', error.message);
+                      }
+                    }}>
                       {[...Array(item.countInStock).keys()].map(x =>
                         <option key={x + 1} value={x + 1}>{x + 1}</option>
                       )}
@@ -76,7 +82,14 @@ function CartScreen(props) {
     </div>
     <div className="cart-action">
       <h3>
-        Subtotal ( {cartItems.reduce((a, c) => a + c.qty, 0)} items)
+        Subtotal ( {cartItems.reduce((a, c) => {
+          try {
+            return a + parseInt(c.qty, 10);
+          } catch (error) {
+            console.error('Error calculating subtotal:', error);
+            return a;
+          }
+        }, 0)} items)
         :
          $ {cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
       </h3>
