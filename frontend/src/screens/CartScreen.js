@@ -55,7 +55,18 @@ function CartScreen(props) {
                   </div>
                   <div>
                     Qty:
-                  <select value={item.qty} onChange={(e) => dispatch(addToCart(item.product, parseInt(e.target.value, 10)))}>
+                    <select value={item.qty} onChange={(e) => {
+                      try {
+                        const parsedValue = parseInt(e.target.value, 10);
+                        if (!isNaN(parsedValue)) {
+                          dispatch(addToCart(item.product, parsedValue));
+                        } else {
+                          console.error(`Parsing error: Qty value is not a number.`);
+                        }
+                      } catch (error) {
+                        console.error(`Error changing quantity: ${error.message}`, error);
+                      }
+                    }}>
                       {[...Array(item.countInStock).keys()].map(x =>
                         <option key={x + 1} value={x + 1}>{x + 1}</option>
                       )}
